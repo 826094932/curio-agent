@@ -1,0 +1,103 @@
+[
+  {
+    "id": "xiaomi-17-ultra-16-512",
+    "category_code": "phone",
+    "brand": "Xiaomi",
+    "model": "Xiaomi 17 Ultra 16GB+512GB",
+    "name": "Xiaomi 17 Ultra 16GB+512GB",
+    "summary": "6.9 英寸 OLED 屏幕，最高 120Hz，骁龙 8 Elite Gen 5，6000mAh 电池，90W 有线快充，16GB+512GB，黑白版本重量 218.4 克。规格来自 Xiaomi 官方规格页。",
+    "specs": {
+      "ram_gb": 16,
+      "storage_gb": 512,
+      "battery_mah": 6000,
+      "charging_w": 90,
+      "refresh_hz": 120,
+      "weight_g": 218.4,
+      "screen_inches": 6.9,
+      "brightness_nits": 3500,
+      "chip": "Snapdragon 8 Elite Gen 5",
+      "camera": "5000 万像素一英寸主摄 + 2 亿像素长焦 + 5000 万像素超广角"
+    },
+    "source": "Xiaomi 官方网站",
+    "source_url": "https://www.mi.com/tw/product/xiaomi-17-ultra/specs/",
+    "source_updated_at": "2026-09-23T00:00:00+08:00",
+    "status": "active"
+  },
+  {
+    "id": "xiaomi-pad-8-pro-8-256",
+    "category_code": "tablet",
+    "brand": "Xiaomi",
+    "model": "Xiaomi Pad 8 Pro 8GB+256GB",
+    "name": "Xiaomi Pad 8 Pro 8GB+256GB 标准版",
+    "summary": "11.2 英寸 3.2K 144Hz 屏幕，骁龙 8 Elite，8GB+256GB，9200mAh 电池和 67W 快充，标准版重量 485 克，运行 Xiaomi HyperOS 3。",
+    "specs": {
+      "ram_gb": 8,
+      "storage_gb": 256,
+      "battery_mah": 9200,
+      "charging_w": 67,
+      "refresh_hz": 144,
+      "weight_g": 485,
+      "screen_inches": 11.2,
+      "resolution_pixels": 6835200,
+      "brightness_nits": 800,
+      "chip": "Snapdragon 8 Elite",
+      "os": "Xiaomi HyperOS 3"
+    },
+    "source": "Xiaomi 官方网站",
+    "source_url": "https://www.mi.com/tw/product/xiaomi-pad-8-pro/specs/",
+    "source_updated_at": "2026-09-23T00:00:00+08:00",
+    "status": "active"
+  },
+  {
+    "id": "redmi-book-pro-16-2026-base",
+    "category_code": "laptop",
+    "brand": "REDMI",
+    "model": "REDMI Book Pro 16 2026",
+    "name": "REDMI Book Pro 16 2026 起售配置",
+    "summary": "小米中国大陆官网当前在售的 16 英寸 REDMI Book Pro 2026。官网静态页面未提供可稳定核对的内存、硬盘、处理器和重量组合，因此仅保留已确认的产品名称与屏幕尺寸，其他规格标记为缺失。",
+    "specs": {
+      "screen_inches": 16
+    },
+    "source": "小米中国大陆官网",
+    "source_url": "https://www.mi.com/shop/buy/detail?product_id=24037",
+    "source_updated_at": "2026-09-23T00:00:00+08:00",
+    "status": "active"
+  },
+  {
+    "id": "xiaomi-watch-s5-46",
+    "category_code": "smartwatch",
+    "brand": "Xiaomi",
+    "model": "Xiaomi Watch S5 46mm",
+    "name": "Xiaomi Watch S5 46mm",
+    "summary": "1.48 英寸 AMOLED 屏幕，峰值亮度 2500 尼特，机身约 46 克；815mAh 电池，正常使用场景最长 14 天，运行 Xiaomi HyperOS 3。",
+    "specs": {
+      "battery_mah": 815,
+      "battery_hours": 336,
+      "weight_g": 46,
+      "screen_inches": 1.48,
+      "brightness_nits": 2500,
+      "os": "Xiaomi HyperOS 3"
+    },
+    "source": "Xiaomi 官方网站",
+    "source_url": "https://www.mi.com/global/product/xiaomi-watch-s5-46mm/",
+    "source_updated_at": "2026-09-23T00:00:00+08:00",
+    "status": "active"
+  },
+  {
+    "id": "xiaomi-buds-6",
+    "category_code": "headphone",
+    "brand": "Xiaomi",
+    "model": "Xiaomi Buds 6 M2540E1",
+    "name": "Xiaomi Buds 6",
+    "summary": "半入耳式真无线蓝牙耳机，支持主动降噪；单只约 4.4 克，AAC 编码并开启主动降噪时单次续航约 3.5 小时，蓝牙 5.4。",
+    "specs": {
+      "battery_hours": 3.5,
+      "weight_g": 4.4,
+      "noise_cancelling": true
+    },
+    "source": "Xiaomi 官方网站",
+    "source_url": "https://www.mi.com/au/product/xiaomi-buds-6/specs/",
+    "source_updated_at": "2026-09-23T00:00:00+08:00",
+    "status": "active"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "product_id": "apple-iphone-18-pro-256",
+    "channel": "Apple 中国大陆官网",
+    "final_price": "9999.00",
+    "currency": "CNY",
+    "in_stock": true,
+    "product_url": "https://www.apple.com.cn/shop/buy-iphone/iphone-18-pro",
+    "captured_at": "2026-09-23T00:00:00+08:00"
+  },
+  {
+    "product_id": "apple-ipad-air-m4-11-128-wifi",
+    "channel": "Apple 中国大陆官网",
+    "final_price": "4799.00",
+    "currency": "CNY",
+    "in_stock": true,
+    "product_url": "https://www.apple.com.cn/shop/buy-ipad/ipad-air",
+    "captured_at": "2026-09-23T00:00:00+08:00"
+  },
+  {
+    "product_id": "apple-watch-series-12-42-gps-aluminum",
+    "channel": "Apple 中国大陆官网",
+    "final_price": "2999.00",
+    "currency": "CNY",
+    "in_stock": true,
+    "product_url": "https://www.apple.com.cn/shop/buy-watch/apple-watch",
+    "captured_at": "2026-09-23T00:00:00+08:00"
+  },
+  {
+    "product_id": "apple-airpods-5-usbc",
+    "channel": "Apple 中国大陆官网",
+    "final_price": "999.00",
+    "currency": "CNY",
+    "in_stock": true,
+    "product_url": "https://www.apple.com.cn/shop/buy-airpods/airpods-5",
+    "captured_at": "2026-09-23T00:00:00+08:00"
+  }
+]

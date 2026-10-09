@@ -1,0 +1,1 @@
+"""Electronic product decision assistant."""

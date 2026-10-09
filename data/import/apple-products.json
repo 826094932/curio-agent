@@ -1,0 +1,105 @@
+[
+  {
+    "id": "apple-iphone-18-pro-256",
+    "category_code": "phone",
+    "brand": "Apple",
+    "model": "iPhone 18 Pro 256GB",
+    "name": "Apple iPhone 18 Pro 256GB",
+    "summary": "6.3 英寸 OLED 超视网膜 XDR 显示屏，最高 120Hz ProMotion，A20 Pro 芯片，支持 NFC，机身重量 211 克。规格来自 Apple 中国大陆官网技术规格页。",
+    "specs": {
+      "storage_gb": 256,
+      "weight_g": 211,
+      "screen_inches": 6.3,
+      "refresh_hz": 120,
+      "brightness_nits": 3000,
+      "chip": "A20 Pro",
+      "supports_nfc": true,
+      "camera": "4800 万像素融合式主摄",
+      "os": "iOS"
+    },
+    "source": "Apple 中国大陆官网",
+    "source_url": "https://www.apple.com.cn/iphone-18-pro/specs/",
+    "source_updated_at": "2026-09-23T00:00:00+08:00",
+    "status": "active"
+  },
+  {
+    "id": "apple-ipad-air-m4-11-128-wifi",
+    "category_code": "tablet",
+    "brand": "Apple",
+    "model": "11-inch iPad Air M4 Wi-Fi 128GB",
+    "name": "Apple 11 英寸 iPad Air M4 无线局域网版 128GB",
+    "summary": "11 英寸 iPad Air，搭载 M4 芯片，128GB 存储，无线局域网机型重量 464 克。规格来自 Apple 中国大陆官网技术规格页。",
+    "specs": {
+      "storage_gb": 128,
+      "weight_g": 464,
+      "screen_inches": 11,
+      "chip": "Apple M4",
+      "os": "iPadOS"
+    },
+    "source": "Apple 中国大陆官网",
+    "source_url": "https://www.apple.com.cn/ipad-air/specs/",
+    "source_updated_at": "2026-09-23T00:00:00+08:00",
+    "status": "active"
+  },
+  {
+    "id": "apple-macbook-air-m5-13-16-512",
+    "category_code": "laptop",
+    "brand": "Apple",
+    "model": "13-inch MacBook Air M5 16GB 512GB",
+    "name": "Apple 13 英寸 MacBook Air M5 16GB+512GB",
+    "summary": "13.6 英寸 Liquid 视网膜显示屏，M5 芯片，16GB 统一内存和 512GB 固态硬盘，53.8Wh 电池，流媒体视频播放最长 18 小时，重量 1.23 千克。",
+    "specs": {
+      "ram_gb": 16,
+      "storage_gb": 512,
+      "battery_wh": 53.8,
+      "battery_hours": 18,
+      "weight_g": 1230,
+      "screen_inches": 13.6,
+      "brightness_nits": 500,
+      "chip": "Apple M5",
+      "os": "macOS"
+    },
+    "source": "Apple 中国大陆官网",
+    "source_url": "https://www.apple.com.cn/macbook-air/specs/",
+    "source_updated_at": "2026-09-23T00:00:00+08:00",
+    "status": "active"
+  },
+  {
+    "id": "apple-watch-series-12-42-gps-aluminum",
+    "category_code": "smartwatch",
+    "brand": "Apple",
+    "model": "Apple Watch Series 12 42mm GPS Aluminum",
+    "name": "Apple Watch Series 12 42 毫米 GPS 铝金属款",
+    "summary": "搭载 S11 芯片和 64GB 容量，全天候 OLED 显示屏峰值亮度 2000 尼特，正常使用最长 24 小时；42 毫米 GPS 铝金属款重量 31.1 克。",
+    "specs": {
+      "storage_gb": 64,
+      "battery_hours": 24,
+      "weight_g": 31.1,
+      "brightness_nits": 2000,
+      "chip": "Apple S11",
+      "os": "watchOS"
+    },
+    "source": "Apple 中国大陆官网",
+    "source_url": "https://www.apple.com.cn/apple-watch-series-12/specs/",
+    "source_updated_at": "2026-09-23T00:00:00+08:00",
+    "status": "active"
+  },
+  {
+    "id": "apple-airpods-5-usbc",
+    "category_code": "headphone",
+    "brand": "Apple",
+    "model": "AirPods 5 USB-C",
+    "name": "Apple AirPods 5 USB-C 充电盒款",
+    "summary": "开放式真无线耳机，搭载 H2 芯片并支持主动降噪；每只重量 4.3 克，开启主动降噪时单次充电最长聆听 4 小时。",
+    "specs": {
+      "battery_hours": 4,
+      "weight_g": 4.3,
+      "noise_cancelling": true,
+      "chip": "Apple H2"
+    },
+    "source": "Apple 中国大陆官网",
+    "source_url": "https://www.apple.com.cn/airpods-5/specs/",
+    "source_updated_at": "2026-09-23T00:00:00+08:00",
+    "status": "active"
+  }
+]

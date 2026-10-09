@@ -1,0 +1,15 @@
+[
+  {
+    "id": "demo-phone-a",
+    "category_code": "phone",
+    "brand": "演示品牌",
+    "model": "DEMO-A",
+    "name": "演示手机 A（虚构测试数据）",
+    "summary": "仅用于验证导入与检索流程，非真实商品，不可用于购买建议。",
+    "specs": {"storage_gb": 256, "battery_mah": 5000, "charging_w": 65, "refresh_hz": 120, "weight_g": 190, "supports_nfc": true},
+    "source": "synthetic-demo",
+    "source_url": "https://example.org/demo-phone-a",
+    "source_updated_at": "2026-01-01T00:00:00Z",
+    "status": "draft"
+  }
+]

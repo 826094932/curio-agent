@@ -1,0 +1,29 @@
+[
+  {
+    "product_id": "xiaomi-17-ultra-16-512",
+    "channel": "小米中国大陆官网",
+    "final_price": "6999.00",
+    "currency": "CNY",
+    "in_stock": true,
+    "product_url": "https://www.mi.com/device",
+    "captured_at": "2026-09-23T00:00:00+08:00"
+  },
+  {
+    "product_id": "xiaomi-pad-8-pro-8-256",
+    "channel": "小米中国大陆官网",
+    "final_price": "2999.00",
+    "currency": "CNY",
+    "in_stock": true,
+    "product_url": "https://www.mi.com/device",
+    "captured_at": "2026-09-23T00:00:00+08:00"
+  },
+  {
+    "product_id": "redmi-book-pro-16-2026-base",
+    "channel": "小米中国大陆官网",
+    "final_price": "7399.00",
+    "currency": "CNY",
+    "in_stock": true,
+    "product_url": "https://www.mi.com/shop/buy/detail?product_id=24037",
+    "captured_at": "2026-09-23T00:00:00+08:00"
+  }
+]

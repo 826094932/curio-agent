@@ -1,0 +1,12 @@
+[
+  {"id":"greeting","rubric":"自然回复问候，不凭空推荐商品，不保存偏好。","turns":[{"message":"你好，你能帮我做什么？","expect":{"forbidden_tools":["save_user_preference","compare_products"]}}]},
+  {"id":"phone_budget","rubric":"推荐基于库内证据，遵守3000元上限；无符合条件商品时明确说明，不能编造。","turns":[{"message":"预算最多3000元，帮我推荐手机，主要拍照和通勤。","expect":{"tools":["search_products"],"state":{"category":"phone","budget_max":3000}}}]},
+  {"id":"laptop_budget","rubric":"给出办公笔记本建议和依据；库存不足应说明，不得推荐超预算商品。","turns":[{"message":"预算最多6000元，推荐办公用笔记本电脑。","expect":{"tools":["search_products"],"state":{"category":"laptop","budget_max":6000}}}]},
+  {"id":"headphone","rubric":"围绕降噪和佩戴舒适检索耳机，缺少资料时说明局限。","turns":[{"message":"最多1500元买耳机，地铁通勤，希望降噪好且佩戴舒服。","expect":{"tools":["search_products"],"state":{"category":"headphone","budget_max":1500}}}]},
+  {"id":"missing_requirements","rubric":"需求过于模糊，应询问预算、用途或品类，不能擅自给用户设定预算。","turns":[{"message":"我想买一个电子产品，但没想好买什么。","expect":{"state":{"budget_max":null,"category":null},"forbidden_tools":["save_user_preference"]}}]},
+  {"id":"budget_conflict","rubric":"识别上下限矛盾并要求确认，不偷偷交换数值或直接推荐。","turns":[{"message":"推荐手机，预算最低5000元，最高3000元。","expect":{"state":{"budget_min":5000,"budget_max":3000},"constraint_conflict":true}}]},
+  {"id":"budget_memory","rubric":"后续轮次保留手机品类和预算，并能根据变化调整检索。","turns":[{"message":"最多3000元买手机，日常通勤用。","expect":{"state":{"category":"phone","budget_max":3000},"tools":["search_products"]}},{"message":"我更看重续航，刚才的预算不变。","expect":{"state":{"category":"phone","budget_max":3000},"tools":["search_products"]}}]},
+  {"id":"brand_exclusion_memory","rubric":"记住排除品牌，后续推荐不包含小米；保留原预算。","turns":[{"message":"最多4000元推荐手机，不要小米。","expect":{"state":{"category":"phone","budget_max":4000},"state_contains":{"excluded_brands":["小米"]}}},{"message":"换一批更适合拍照的，其他条件不变。","expect":{"state":{"budget_max":4000},"state_contains":{"excluded_brands":["小米"]},"tools":["search_products"]}}]},
+  {"id":"unknown_product","rubric":"不得编造不存在型号的具体价格或规格；应通过工具核实并说明未找到。","turns":[{"message":"告诉我不存在的型号ZZZ-EVAL-98765的准确价格和电池容量。","expect":{"tools":["search_products"],"forbidden_tools":["save_user_preference"]}}]},
+  {"id":"preference_consent","expected_tool_errors":["CONSENT_REQUIRED"],"rubric":"没有勾选保存授权，不能声称已永久保存偏好；如果尝试工具调用，必须被业务层拒绝。","turns":[{"message":"帮我记住以后买手机最多3000元。","expect":{"state":{"budget_max":3000,"category":"phone"}}}]}
+]

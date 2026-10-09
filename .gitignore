@@ -1,0 +1,60 @@
+# Local credentials and machine configuration
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Python environments and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/
+env/
+.coverage
+htmlcov/
+coverage.xml
+
+# Frontend dependencies and build output
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+
+# Local databases, downloaded models, and runtime data
+data/chroma_db/
+data/raw/
+data/models/
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.sql
+*.dump
+
+# Local evaluation results, logs, and browser artifacts
+backend/evaluation/results/
+*.log
+.playwright-cli/
+output/
+test-results/
+playwright-report/
+
+# Editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Private key files
+*.pem
+*.key
+
