@@ -12,6 +12,7 @@ from app.errors import AppError
 from app.chat.memory import load_memory, extract_requirements
 from app.agent.factory import build_agent
 from app.agent.tools import build_tools
+from app.products.matching import models_in_message, matches_model
 
 
 def needs_product_search(message, state):
@@ -22,6 +23,8 @@ def no_match_answer(result):
     count = result.get('active_count', 0)
     if not count:
         return '当前品类没有已启用的商品资料，暂时无法基于本地数据推荐。'
+    if result.get('missing_models'):
+        return '本地商品库已有资料，但当前条件下没有以下指定型号的可用候选：' + '、'.join(result['missing_models']) + '。可开启联网补充查询这些型号，或补充对应的本地资料。'
     lines = [f'当前品类已有 {count} 条已启用商品，但没有符合本轮预算和规格要求的候选。不能据此说商品没有导入。']
     for item in result.get('data_gaps', [])[:3]:
         gaps = [f'缺少 {key} 参数' for key in item['missing_specs']]
@@ -103,6 +106,13 @@ async def execute(run, data, emit):
                 old_version, previous = context.state_version, dict(context.state)
                 messages, summary, until = await load_memory(db, context, web_search=data.web_search)
             state = await extract_requirements(previous, data.message)
+            # 明确写在当前消息里的常见型号做确定性兜底，避免提取器漏掉对比项。
+            mentioned = models_in_message(data.message)
+            if mentioned:
+                # 保留提取器发现的其他型号；常见别名以用户原称谓为准。
+                others = [name for name in state.get('requested_models', [])
+                          if not any(matches_model({'name': name, 'model': name}, alias) for alias in mentioned)]
+                state['requested_models'] = list(dict.fromkeys([*mentioned, *others]))[:5]
             evidence, ranked = [], []
             web_report = {'enabled': data.web_search, 'status': 'pending' if data.web_search else 'disabled',
                           'saved_count': 0, 'source_count': 0, 'cache_hit': False, 'warning': None}
@@ -113,8 +123,8 @@ async def execute(run, data, emit):
             answer = ''
             verified = None
             preflight_messages = []
-            if needs_product_search(data.message, state):
-                search_args = {'query': data.message, 'category': state['category'], 'top_k': 10}
+            if needs_product_search(data.message, state) or (data.web_search and state.get('requested_models')):
+                search_args = {'query': data.message[:500], 'category': state.get('category'), 'top_k': 10}
                 if 'ipad' in data.message.lower() and not re.search(r'对比|比较|其他|安卓|小米|xiaomi', data.message, re.I):
                     search_args['brands'] = ['Apple']
                 search_tool = next(tool for tool in tools if tool.name == 'search_products')
@@ -131,13 +141,14 @@ async def execute(run, data, emit):
                         ToolMessage(content=json.dumps(verified, ensure_ascii=False), tool_call_id=call_id, name='search_products'),
                     ]
                 if data.web_search:
-                    if verified['ok'] and verified['data']['items']:
+                    if verified['ok'] and verified['data'].get('local_sufficient', bool(verified['data']['items'])):
                         web_report['status'] = 'local'
                         await emit('web_search', dict(web_report))
                     else:
                         web_tool = next(tool for tool in tools if tool.name == 'search_web')
                         labels = {'phone': '手机', 'laptop': '笔记本', 'headphone': '耳机', 'monitor': '显示器', 'tablet': '平板', 'smartwatch': '智能手表'}
-                        query = data.message[:350] + ' ' + labels.get(state.get('category'), '')
+                        missing = verified.get('data', {}).get('missing_models', state.get('requested_models', []))
+                        query = ((' / '.join(missing) + ' 官网参数 ') if missing else '') + data.message[:300] + ' ' + labels.get(state.get('category'), '')
                         if state.get('budget_max') is not None:
                             query += f" 预算{state['budget_max']}元以内"
                         if state.get('use_cases'):

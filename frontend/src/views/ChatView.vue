@@ -25,6 +25,8 @@ const webStatus = computed(() => {
   const result = chat.webSearchResult
   if (!result?.enabled) return ''
   if (result.warning) return result.warning
+  if (result.status === 'local_missing') return result.missing_models?.length ? `本地尚未匹配：${result.missing_models.join('、')}` : '本地尚无符合本轮条件的候选'
+  if (result.status === 'local' && result.requested_models?.length) return `本地已匹配全部 ${result.requested_models.length} 个指定型号，本轮未联网`
   const labels = { local: '本地已有合适候选，本轮未联网', cached: '已使用保存的网页资料，本轮未联网', searched: `已联网补充 ${result.source_count} 条来源，保存 ${result.saved_count} 条资料`, empty: '联网未找到足够相关的资料', stale_cache: '正在参考已过期的网页资料，请核验时效', unavailable: '联网暂不可用', pending: '本轮已开启联网补充' }
   return labels[result.status] || ''
 })

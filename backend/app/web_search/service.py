@@ -140,7 +140,7 @@ async def upsert(db, model, values, updates):
 async def search_and_save(user_id, query, state):
     # 同一查询在不同预算/硬约束下不能误用缓存；用户隔离由后端身份控制。
     import json
-    scope = {k: state.get(k) for k in ('category', 'budget_min', 'budget_max', 'hard_constraints', 'excluded_brands')}
+    scope = {k: state.get(k) for k in ('category', 'budget_min', 'budget_max', 'hard_constraints', 'excluded_brands', 'requested_models')}
     query = re.sub(r'\s+', ' ', query).strip()
     query_hash = digest(json.dumps([query.casefold(), scope], ensure_ascii=False, sort_keys=True))
     storage_available = True

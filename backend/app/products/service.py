@@ -8,6 +8,7 @@ from app.db.chroma import vectors
 from app.db.models import Product, Price, Review, now
 from app.products.scoring import matches, score
 from app.errors import AppError
+from app.products.matching import matches_model, local_coverage
 
 
 def iso(value):
@@ -45,6 +46,8 @@ async def details(ids):
 
 def eligible(item, state):
     if state.get('category') and item['category'] != state['category']:
+        return False
+    if state.get('requested_models') and not any(matches_model(item, name) for name in state['requested_models']):
         return False
     if item['brand'].lower() in [x.lower() for x in state.get('excluded_brands', [])]:
         return False
@@ -90,8 +93,23 @@ async def search(data, state=None):
                       if key.removesuffix('_gte').removesuffix('_lte') not in item['specs']]
             if absent or ((state.get('budget_min') is not None or state.get('budget_max') is not None) and not item['price']):
                 missing.append({'name': item['name'], 'missing_specs': absent, 'missing_price': not bool(item['price'])})
-        return {'items': [], 'sources': [], 'reason': 'NO_ACTIVE_PRODUCTS_IN_CATEGORY' if not candidates else 'NO_MATCHING_CONSTRAINTS',
-                'active_count': len(candidates), 'data_gaps': missing[:5]}
+        reason = 'NO_ACTIVE_PRODUCTS_IN_CATEGORY' if not candidates else ('NO_MATCHING_MODELS' if state.get('requested_models') else 'NO_MATCHING_CONSTRAINTS')
+        return {'items': [], 'sources': [], 'reason': reason,
+                'active_count': len(candidates), 'data_gaps': missing[:5], **local_coverage([], state)}
+    if state.get('requested_models'):
+        # 对指定型号直接核对全量结构化身份，不用近邻向量代替型号，
+        # 也不让某款型号排在 Top-K 之外导致误判缺失。
+        ordered = []
+        for name in state['requested_models']:
+            for id in allowed:
+                if matches_model(records[id], name) and id not in ordered:
+                    ordered.append(id)
+        items = [{**records[id], 'retrieval_score': None, 'evidence_id': f'product:{id}'} for id in ordered[:data.top_k]]
+        coverage = local_coverage(items, state)
+        return {'items': items,
+                'sources': [{'id': f"product:{item['id']}", 'url': item['source_url'], 'text': item['summary']} for item in items],
+                'retrieval_mode': 'model_match', 'active_count': len(candidates), **coverage,
+                'reason': None if coverage['local_sufficient'] else 'PARTIAL_MODEL_COVERAGE'}
     terms = [term.lower() for term in re.findall(r'[A-Za-z][A-Za-z0-9+.-]*', data.query)]
     lexical = sorted(allowed, key=lambda id: sum(term in f"{records[id]['name']} {records[id]['model']}".lower() for term in terms), reverse=True)
     lexical = [id for id in lexical if any(term in f"{records[id]['name']} {records[id]['model']}".lower() for term in terms)]
