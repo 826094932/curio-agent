@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from ulid import ULID
-from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, Numeric, String, Text, UniqueConstraint, Index
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, Numeric, String, Text, UniqueConstraint, Index, false
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -110,6 +110,7 @@ class Message(Entity, Base):
     session_id: Mapped[str] = mapped_column(ForeignKey('chat_sessions.id'), index=True)
     role: Mapped[str] = mapped_column(String(16))
     content: Mapped[str] = mapped_column(Text)
+    web_search: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())
 
 
 class SessionContext(Base):
@@ -178,3 +179,26 @@ class ImportJob(Entity, Base):
     total_count: Mapped[int] = mapped_column(Integer, default=0)
     success_count: Mapped[int] = mapped_column(Integer, default=0)
     error_report: Mapped[dict] = mapped_column(JSON, default=dict)
+
+
+class WebEvidence(Entity, Base):
+    __tablename__ = 'web_evidence'
+    user_id: Mapped[str] = mapped_column(ForeignKey('users.id'), index=True)
+    url: Mapped[str] = mapped_column(String(1024))
+    title: Mapped[str] = mapped_column(String(500))
+    content: Mapped[str] = mapped_column(Text)
+    content_hash: Mapped[str] = mapped_column(String(64))
+    category: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    source_kind: Mapped[str] = mapped_column(String(32))
+    relevance_score: Mapped[float] = mapped_column(Float)
+    published_at: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=now, index=True)
+
+
+class WebSearchCache(Entity, Base):
+    __tablename__ = 'web_search_cache'
+    __table_args__ = (UniqueConstraint('user_id', 'query_hash', name='uq_web_search_owner_query'),)
+    user_id: Mapped[str] = mapped_column(ForeignKey('users.id'))
+    query_hash: Mapped[str] = mapped_column(String(64))
+    evidence_ids: Mapped[list] = mapped_column(JSON, default=list)
+    expires_at: Mapped[datetime] = mapped_column(DateTime)

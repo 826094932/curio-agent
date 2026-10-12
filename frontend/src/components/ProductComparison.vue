@@ -8,6 +8,7 @@ const icons = { phone: Smartphone, laptop: Laptop, headphone: Headphones, monito
 const labels = { phone: '手机', laptop: '笔记本', headphone: '耳机', monitor: '显示器', tablet: '平板', smartwatch: '智能手表' }
 const safeLink = url => /^https?:\/\//i.test(url || '') ? url : undefined
 const price = p => p.price?.final_price != null ? '¥' + Number(p.price.final_price).toLocaleString('zh-CN') : '暂无价格'
+const fetchedAt = value => value ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : ''
 watch(() => chat.recommendationId, () => { rating.value = 0; error.value = '' })
 async function feedback(value) {
   if (saving.value) return
@@ -26,7 +27,7 @@ async function feedback(value) {
     <div v-if="chat.products.length && view === 'table'" class="table-scroll"><table><thead><tr><th>产品</th><th>价格快照</th><th>规格评分</th><th>缺失数据</th></tr></thead><tbody>
       <tr v-for="p in chat.products" :key="p.id"><td><component :is="icons[p.category] || Smartphone" :size="18" /><strong>{{ p.name }}</strong><a v-if="safeLink(p.source_url)" :href="safeLink(p.source_url)" target="_blank" rel="noopener noreferrer" title="查看产品来源"><ExternalLink :size="14" /></a></td><td>{{ price(p) }}<small>{{ p.price?.channel }} · {{ p.price?.captured_at?.slice(0, 10) }}{{ p.price?.is_stale ? ' · 已过期' : '' }}</small></td><td>{{ p.total_score ?? '—' }}<small v-for="(value, key) in p.dimension_scores" :key="key">{{ key }}: {{ value }}</small></td><td>{{ p.missing_fields?.join('、') || '无' }}</td></tr>
     </tbody></table></div>
-    <details v-if="chat.sources.length" class="sources-panel"><summary><ShieldCheck :size="16" />这份建议的依据 <span>{{ chat.sources.length }} 条来源</span></summary><ol><li v-for="source in chat.sources" :key="source.id"><a :href="safeLink(source.url)" target="_blank" rel="noopener noreferrer">{{ source.id }}<ExternalLink :size="12" /></a><p>{{ source.text }}</p></li></ol></details>
+    <details v-if="chat.sources.length" class="sources-panel"><summary><ShieldCheck :size="16" />这份建议的依据 <span>{{ chat.sources.length }} 条来源</span></summary><ol><li v-for="source in chat.sources" :key="source.id"><a :href="safeLink(source.url)" target="_blank" rel="noopener noreferrer">{{ source.title || source.id }}<ExternalLink :size="12" /></a><div v-if="source.source_type === 'web'" class="web-source-meta"><span>{{ source.source_kind === 'official_domain' ? '官网域名' : '网页资料' }}</span><span>{{ source.cached ? '来自已存资料' : '本轮搜索' }}</span><span>{{ source.persisted ? '已保存' : '未保存' }}</span><span v-if="source.is_stale">资料已过期</span><span>获取于 {{ fetchedAt(source.fetched_at) }}</span></div><p>{{ source.text }}</p></li></ol></details>
     <div v-if="chat.recommendationId" class="feedback"><span class="muted small">这次建议，有帮到你吗？</span><div class="rating-stars"><button v-for="n in 5" :key="n" class="icon" :title="n + ' 分'" :aria-label="n + ' 分'" :aria-pressed="rating === n" :disabled="saving" @click="feedback(n)"><Star :size="18" :fill="rating >= n ? '#be9453' : 'none'" :color="rating >= n ? '#be9453' : 'currentColor'" /></button></div><span class="small feedback-thanks" role="status">{{ saving ? '正在保存…' : rating ? '谢谢，让我们更懂你。' : '' }}</span></div>
     <p v-if="error" class="error" role="alert">{{ error }}</p>
   </section>

@@ -9,6 +9,7 @@ class ChatInput(StrictModel):
     request_id: str = Field(pattern=r'^[A-Za-z0-9_-]{8,64}$')
     message: str = Field(min_length=1, max_length=4000)
     save_preference: bool = False
+    web_search: bool = False
 
 
 class SessionPatch(StrictModel):

@@ -1,7 +1,7 @@
 from langchain_deepseek import ChatDeepSeek
 from langchain.agents import create_agent
 from app.config import settings
-from app.agent.prompts import SYSTEM_PROMPT
+from app.agent.prompts import SYSTEM_PROMPT, WEB_SEARCH_PROMPT
 from app.errors import AppError
 
 
@@ -22,5 +22,6 @@ def create_model():
     )
 
 
-def build_agent(tools):
-    return create_agent(model=create_model(), tools=tools, system_prompt=SYSTEM_PROMPT)
+def build_agent(tools, web_search=False):
+    prompt = SYSTEM_PROMPT + (WEB_SEARCH_PROMPT if web_search else '')
+    return create_agent(model=create_model(), tools=tools, system_prompt=prompt)

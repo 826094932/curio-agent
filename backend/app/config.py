@@ -1,5 +1,5 @@
 from pathlib import Path
-from pydantic import SecretStr
+from pydantic import SecretStr, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     deepseek_api_key: SecretStr = SecretStr('')
     deepseek_model: str = 'deepseek-flash'
     deepseek_base_url: str = 'https://api.deepseek.com'
+    tavily_api_key: SecretStr = SecretStr('')
+    web_search_timeout_seconds: int = Field(default=15, ge=1, le=30)
+    web_search_cache_hours: int = Field(default=6, ge=1, le=168)
+    web_search_max_calls: int = Field(default=2, ge=1, le=3)
     jwt_secret: SecretStr = SecretStr('')
     cookie_secure: bool = False
     cors_origins: list[str] = ['http://localhost:5173', 'http://127.0.0.1:5173']

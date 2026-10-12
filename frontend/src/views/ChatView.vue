@@ -20,6 +20,14 @@ const ideas = [
 ]
 const visibleIdeas = computed(() => category.value === 'all' ? ideas.slice(0, 3) : ideas.filter(item => item.category === category.value))
 const stages = { understanding: '正在理解你的需求', search_products: '正在寻找合适的产品', get_product_details: '正在核对产品参数', get_current_prices: '正在核对价格信息', search_reviews: '正在整理使用评价', compare_products: '正在对比候选产品', get_user_preference: '正在读取你的偏好', save_user_preference: '正在记住你的偏好' }
+stages.search_web = '本地候选不足，正在查找补充资料'
+const webStatus = computed(() => {
+  const result = chat.webSearchResult
+  if (!result?.enabled) return ''
+  if (result.warning) return result.warning
+  const labels = { local: '本地已有合适候选，本轮未联网', cached: '已使用保存的网页资料，本轮未联网', searched: `已联网补充 ${result.source_count} 条来源，保存 ${result.saved_count} 条资料`, empty: '联网未找到足够相关的资料', stale_cache: '正在参考已过期的网页资料，请核验时效', unavailable: '联网暂不可用', pending: '本轮已开启联网补充' }
+  return labels[result.status] || ''
+})
 function choose(prompt) { composer.value?.setDraft(prompt) }
 async function recover() { try { await chat.recover() } catch (e) { chat.error = e.message } }
 onMounted(async () => {
@@ -49,6 +57,7 @@ onMounted(async () => {
     <div class="composer-area">
       <Transition name="status"><div v-if="chat.stage" class="stage" role="status"><span class="thinking-dots"><i></i><i></i><i></i></span>{{ stages[chat.stage] || '正在整理回答' }}<span class="stage-hint">选物正在为你工作</span></div></Transition>
       <Transition name="status"><div v-if="chat.error" class="error chat-error" role="alert">{{ chat.error }}<button v-if="chat.requestId" class="icon" title="查询运行结果" @click="recover"><RefreshCw :size="16" /></button></div></Transition>
+      <p v-if="webStatus" class="web-search-status" role="status"><Search :size="13" />{{ webStatus }}</p>
       <ChatInput ref="composer" /><p class="disclaimer"><Search :size="11" />推荐供选购参考，价格与参数请以来源页面为准。</p>
     </div>
   </AppShell>
