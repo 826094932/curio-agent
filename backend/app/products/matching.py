@@ -33,7 +33,10 @@ def matches_model(item, requested):
         return True
     # 允许 Sony XM5 命中 Sony WH-1000XM5；不让 XM5 命中 XM50，
     # 也不把 iPhone 16 Pro Max / Studio Pro Plus 当作指定的基础型号。
-    pattern = re.escape(target) + r'(?![a-z0-9])'
+    # canonical 删除空格后，AirPods 5 USB-C 会成为 airpods5usbc。
+    # 只允许明确的配置后缀，不能把 Pro / Max / Plus 当作配置吞掉。
+    config_suffix = r'(?:(?:\d+(?:gb|tb))|usbc|wifi|cellular|gps|silver|black|white|blue|gray|grey|gold|银色|黑色|白色|蓝色|灰色|金色)*'
+    pattern = re.escape(target) + config_suffix + r'$'
     return any(re.search(pattern, value) for value in identities)
 
 

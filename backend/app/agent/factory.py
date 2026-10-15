@@ -3,6 +3,7 @@ from langchain.agents import create_agent
 from app.config import settings
 from app.agent.prompts import SYSTEM_PROMPT, WEB_SEARCH_PROMPT
 from app.errors import AppError
+from app.chat.timing import active_timing
 
 
 def create_model():
@@ -10,6 +11,7 @@ def create_model():
     if not settings.deepseek_api_key.get_secret_value():
         raise AppError(503, 'MODEL_NOT_CONFIGURED', '缺少 DEEPSEEK_API_KEY')
     return ChatDeepSeek(
+        callbacks=[active_timing.get().models] if active_timing.get() else None,
         model=settings.deepseek_model,
         api_key=settings.deepseek_api_key,
         api_base=settings.deepseek_base_url,

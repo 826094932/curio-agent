@@ -4,6 +4,7 @@ import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { Sparkles, UserRound, Copy, Check, ChevronUp } from 'lucide-vue-next'
 import { useChat } from '../stores/chat'
+import ResponseMetrics from './ResponseMetrics.vue'
 const chat = useChat(), container = ref(null), copied = ref('')
 const copyError = ref(''), loadingOlder = ref(false)
 let copyTimer
@@ -32,6 +33,7 @@ watch(() => [chat.messages.length, chat.messages.at(-1)?.content], async () => {
         <div class="message-label">{{ item.role === 'user' ? '你' : '选物' }}<span v-if="item.partial && !chat.generating" class="muted small">未完成</span></div>
         <div v-if="item.role === 'assistant'" class="markdown" v-html="markdown(item.content)"></div>
         <p v-else class="user-text">{{ item.content }}</p>
+        <ResponseMetrics v-if="item.role === 'assistant' && item.timings" :metrics="item.timings" />
         <div v-if="!item.content && chat.generating" class="thinking-placeholder" role="status"><span class="thinking-dots"><i></i><i></i><i></i></span><span>正在为你整理思路</span></div>
         <button v-if="item.content && item.role === 'assistant'" class="copy" :title="copied === item.id ? '已复制' : '复制回答'" @click="copy(item)"><Check v-if="copied === item.id" :size="14" /><Copy v-else :size="14" />{{ copied === item.id ? '已复制' : '复制' }}</button>
       </div>

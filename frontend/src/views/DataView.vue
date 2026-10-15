@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { Upload, RefreshCw, Search, FileJson, ExternalLink, Globe2, Database, Layers, ArrowUpRight, LoaderCircle } from 'lucide-vue-next'
 import AppShell from '../components/AppShell.vue'
+import ProductUpdates from '../components/ProductUpdates.vue'
 import { useChat } from '../stores/chat'
 import { api } from '../api'
 
@@ -70,6 +71,8 @@ async function upload(event) {
   <div class="data-scroll"><div class="data-page">
     <header class="data-header"><div><span class="eyebrow">YOUR KNOWLEDGE STUDIO</span><h1>让好建议，有据可依<span class="heading-dot">.</span></h1><p class="muted">采集、核对与整理，为选物建立可信的产品资料库。</p></div><span class="studio-icon"><Database :size="30" :stroke-width="1.3" /></span></header>
     <div class="data-steps"><span><i>01</i>提取官网资料</span><ArrowUpRight :size="15" /><span><i>02</i>核对与导入</span><ArrowUpRight :size="15" /><span><i>03</i>建立检索索引</span></div>
+
+    <ProductUpdates />
 
     <section>
       <div class="panel-heading"><span class="panel-icon"><Globe2 :size="21" /></span><div><h2>从官网开始</h2><p>粘贴品牌官网链接，提取资料并生成待核对的商品草稿。</p></div><span class="panel-number">01</span></div>

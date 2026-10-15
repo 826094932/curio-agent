@@ -15,6 +15,7 @@ from app.auth.router import router as auth_router
 from app.chat.router import router as chat_router
 from app.products.router import router as product_router
 from app.ingestion.router import router as ingestion_router
+from app.ingestion.updates import recover_interrupted
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,7 @@ async def lifespan(app):
             async with database.session() as db:
                 await db.execute(update(AgentRun).where(AgentRun.status == 'running').values(status='failed', error_code='PROCESS_RESTARTED', finished_at=now()))
                 await db.execute(update(SessionContext).where(SessionContext.active_run_id.is_not(None)).values(active_run_id=None))
+                await recover_interrupted(db)
                 await db.commit()
         except SQLAlchemyError:
             logger.warning('Database not ready; configure MYSQL_DSN and run alembic upgrade head.')

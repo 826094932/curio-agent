@@ -238,7 +238,7 @@ def main():
     parser.add_argument("--version", default="baseline")
     parser.add_argument("--repeat", type=int, default=1)
     parser.add_argument("--limit", type=int)
-    parser.add_argument("--output", type=Path, default=Path(__file__).with_name("results"))
+    parser.add_argument("--output", type=Path, help="结果根目录；默认项目根目录下的 log")
     parser.add_argument("--baseline", type=Path)
     parser.add_argument("--input-price", type=float)
     parser.add_argument("--output-price", type=float)
@@ -257,7 +257,8 @@ def main():
     if args.dry_run:
         print(f"数据集有效：{len(cases)} 个案例，{sum(len(c['turns']) for c in cases)*args.repeat} 轮；未调用数据库或模型。")
         return
-    out = args.output / (datetime.now().strftime("%Y%m%d-%H%M%S") + "-" + digest(args.version)[:8])
+    root = args.output if args.output is not None else Path(args.project) / 'log'
+    out = root / (datetime.now().strftime("%Y%m%d-%H%M%S") + "-agent-" + digest(args.version)[:8])
     out.mkdir(parents=True, exist_ok=False)
     try:
         asyncio.run(evaluate(args, cases, out))

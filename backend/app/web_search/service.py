@@ -18,7 +18,7 @@ from app.db.models import WebEvidence, WebSearchCache, now
 from app.db.mysql import database
 from app.errors import AppError
 
-OFFICIAL_DOMAINS = ('apple.com', 'sony.com', 'sony.com.cn', 'sony.cn', 'mi.com',
+OFFICIAL_DOMAINS = ('apple.com', 'apple.com.cn', 'beatsbydre.com', 'bose.com', 'bose.cn', 'sony.com', 'sony.com.cn', 'sony.cn', 'mi.com',
                     'huawei.com', 'vivo.com', 'oppo.com', 'samsung.com', 'lenovo.com',
                     'lenovo.com.cn', 'dell.com', 'asus.com', 'hp.com', 'honor.com')
 
@@ -170,7 +170,7 @@ async def search_and_save(user_id, query, state):
                     user_id=user_id, url=record['url'], title=record['title'], content=record['content'],
                     content_hash=content_hash, relevance_score=record['score'], source_kind=record['source_kind'],
                     category=state.get('category'), published_at=record['published_at'], fetched_at=fetched))
-    saved, warning = False, None
+    saved, warning, update_count = False, None, 0
     if rows and storage_available:
         try:
             async with database.session() as db:
@@ -183,6 +183,14 @@ async def search_and_save(user_id, query, state):
                 await upsert(db, WebSearchCache, values, {'evidence_ids': values['evidence_ids'], 'expires_at': values['expires_at']})
                 await db.commit()
             saved = True
+            # 公开商品线索单独存队列；失败不回滚已保存证据，也不增加模型调用。
+            try:
+                from app.ingestion.updates import enqueue
+                async with database.session() as db:
+                    update_count = await enqueue(db, rows)
+                    await db.commit()
+            except SQLAlchemyError:
+                warning = '网页证据已保存；商品更新记录未同步，可在管理员页面同步历史资料'
         except SQLAlchemyError:
             warning = '网页资料已获取，但数据库保存失败；本轮仍可参考来源'
     elif rows:
@@ -191,4 +199,4 @@ async def search_and_save(user_id, query, state):
     credits = usage.get('credits') if isinstance(usage, dict) else None
     return {'items': [as_source(row, persisted=saved) for row in rows],
             'status': 'searched' if rows else 'empty', 'saved_count': len(rows) if saved else 0,
-            'credits': credits, 'warning': warning}
+            'credits': credits, 'warning': warning, 'update_count': update_count}

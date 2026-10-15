@@ -33,7 +33,7 @@ export const useChat = defineStore('chat', {
       this.webSearchResult = result.web_search || null
       this.products = result.products || []; this.sources = result.sources || []; this.recommendationId = result.recommendation_id
       const last = this.messages.at(-1)
-      if (last?.role === 'assistant') { last.content = result.answer; last.partial = false }
+      if (last?.role === 'assistant') { last.content = result.answer; last.partial = false; last.timings = result.timings || null }
     },
     async send(message, savePreference = false) {
       if (this.generating || !message.trim()) return
@@ -51,6 +51,7 @@ export const useChat = defineStore('chat', {
           if (event === 'reset') this.messages.at(-1).content = ''
           if (event === 'status') this.stage = data.stage
           if (event === 'web_search') this.webSearchResult = data
+          if (event === 'timings') this.messages.at(-1).timings = data
           if (event === 'result') this.applyResult(data)
         })
       } catch (error) { this.error = error.name === 'AbortError' ? '已停止生成，当前内容未作为完整回答保存' : error.message }

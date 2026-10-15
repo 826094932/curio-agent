@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     web_search_timeout_seconds: int = Field(default=15, ge=1, le=30)
     web_search_cache_hours: int = Field(default=6, ge=1, le=168)
     web_search_max_calls: int = Field(default=2, ge=1, le=3)
+    timing_label: str = Field(default='baseline-20261013', min_length=1, max_length=64)
     jwt_secret: SecretStr = SecretStr('')
     cookie_secure: bool = False
     cors_origins: list[str] = ['http://localhost:5173', 'http://127.0.0.1:5173']

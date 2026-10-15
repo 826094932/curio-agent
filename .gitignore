@@ -58,3 +58,7 @@ desktop.ini
 *.pem
 *.key
 
+
+# Local response metrics
+data/metrics/
+/log/

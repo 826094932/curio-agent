@@ -202,3 +202,30 @@ class WebSearchCache(Entity, Base):
     query_hash: Mapped[str] = mapped_column(String(64))
     evidence_ids: Mapped[list] = mapped_column(JSON, default=list)
     expires_at: Mapped[datetime] = mapped_column(DateTime)
+
+
+class ProductUpdate(Entity, Base):
+    """公开网页的入库审核记录；不包含提问、账号或 API 配置。"""
+    __tablename__ = 'product_updates'
+    source_url: Mapped[str] = mapped_column(String(1024))
+    title: Mapped[str] = mapped_column(String(500))
+    source_content: Mapped[str] = mapped_column(Text)
+    source_hash: Mapped[str] = mapped_column(String(64))
+    category: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    captured_at: Mapped[datetime] = mapped_column(DateTime)
+    status: Mapped[str] = mapped_column(String(32), default='pending', index=True)
+    version: Mapped[int] = mapped_column(Integer, default=0)
+    page_url: Mapped[str | None] = mapped_column(String(1024), nullable=True)
+    page_text: Mapped[str] = mapped_column(Text, default='')
+    draft: Mapped[dict] = mapped_column(JSON, default=dict)
+    field_evidence: Mapped[dict] = mapped_column(JSON, default=dict)
+    warnings: Mapped[list] = mapped_column(JSON, default=list)
+    events: Mapped[list] = mapped_column(JSON, default=list)
+    timings: Mapped[dict] = mapped_column(JSON, default=dict)
+    product_id: Mapped[str | None] = mapped_column(ForeignKey('products.id'), nullable=True)
+    reviewed_by: Mapped[str | None] = mapped_column(ForeignKey('users.id'), nullable=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    review_note: Mapped[str] = mapped_column(String(500), default='')
+    error_code: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    error_message: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=now, onupdate=now)

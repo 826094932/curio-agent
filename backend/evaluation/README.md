@@ -16,7 +16,7 @@ python evaluation\run.py --version v1 --repeat 3
 
 `--limit 1` 先跑问候案例，验证整条链能工作，再跑完整数据集。上述文件带有10个起始案例（12轮）；后续请增加实际商品、真实价格证据、工具失败和更多记忆案例。不要只靠这10个案例声称整体准确率。
 
-结果在 `evaluation/results/<时间>-<版本哈希>/`：
+结果默认在项目根目录 `log/<时间>-agent-<版本哈希>/`：
 
 * `manifest.json`：版本、模型、包版本、事实库/Prompt/数据集哈希、评测用户ID。
 * `runs.jsonl`：逐轮回答、检查项、完整工具参数、状态、工具耗时与错误、模型次数及Token。
@@ -25,7 +25,7 @@ python evaluation\run.py --version v1 --repeat 3
 * `comparison.json`：指定基准时生成前后差值和条件变化提示。
 
 ```bat
-python evaluation\run.py --version v2 --repeat 3 --baseline evaluation\results\上一版目录
+python evaluation\run.py --version v2 --repeat 3 --baseline ..\log\上一版目录
 ```
 
 指标边界：规则通过率是配置检查项通过的比例，不等于最终回答正确率；`tool_schema_valid_rate` 只表示参数格式合法，语义参数正确需要增补规则或人工标注。执行成功表示无异常，不表示回答正确。首个可见文本可能是工具前过渡语，不是最终答案首字。总耗时包括需求提取、工具、模型和数据库提交。缺失Token记为null，不当作0。失败轮次之后的依赖追问不执行；对比时检查案例覆盖量。没有固定答案时请人工审核证据、预算、缺点、价格时效和未找到信息的表述。

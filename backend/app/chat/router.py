@@ -10,6 +10,7 @@ from app.db.models import ChatSession, SessionContext, Message, AgentRun
 from app.chat.schemas import ChatInput, SessionPatch
 from app.chat.service import owned_session, prepare, execute
 from app.errors import AppError
+from app.chat.timing import RunTiming
 
 router = APIRouter(tags=['会话与聊天'])
 
@@ -46,7 +47,15 @@ async def messages(id: str, before: str | None = None, limit: int = Query(50, ge
         rows = (await db.scalars(query.order_by(Message.id.desc()).limit(limit + 1))).all()
         has_more = len(rows) > limit
         rows = list(reversed(rows[:limit]))
-        return {'items': [{'id': row.id, 'role': row.role, 'content': row.content} for row in rows], 'next_cursor': rows[0].id if has_more else None}
+        timings = {}
+        if rows:
+            runs = (await db.scalars(select(AgentRun).where(AgentRun.user_id == user.id, AgentRun.session_id == id,
+                    AgentRun.status == 'succeeded', AgentRun.finished_at >= rows[0].created_at,
+                    AgentRun.created_at <= rows[-1].created_at))).all()
+            for run in runs:
+                if run.result.get('assistant_message_id') and run.result.get('timings'):
+                    timings[run.result['assistant_message_id']] = run.result['timings']
+        return {'items': [{'id': row.id, 'role': row.role, 'content': row.content, 'timings': timings.get(row.id)} for row in rows], 'next_cursor': rows[0].id if has_more else None}
 
 
 @router.patch('/sessions/{id}')
@@ -86,17 +95,21 @@ async def run_status(request_id: str, user=Depends(current_user)):
 
 @router.post('/chat')
 async def chat(data: ChatInput, user=Depends(current_user)):
-    run, fresh = await prepare(user.id, data)
+    timing = RunTiming()
+    with timing.span('prepare'):
+        run, fresh = await prepare(user.id, data)
     if not fresh:
         return {'status': run.status, 'result': run.result, 'error_code': run.error_code}
     async def ignore(*args):
         pass
-    return await execute(run, data, ignore)
+    return await execute(run, data, ignore, timing=timing)
 
 
 @router.post('/chat/stream')
 async def stream(data: ChatInput, request: Request, user=Depends(current_user)):
-    run, fresh = await prepare(user.id, data)
+    timing = RunTiming()
+    with timing.span('prepare'):
+        run, fresh = await prepare(user.id, data)
 
     async def events():
         if not fresh:
@@ -111,7 +124,7 @@ async def stream(data: ChatInput, request: Request, user=Depends(current_user)):
             await queue.put((event, content))
         async def producer():
             try:
-                await execute(run, data, emit)
+                await execute(run, data, emit, timing=timing)
             except AppError as exc:
                 await emit('error', {'code': exc.code, 'message': exc.message})
             finally:

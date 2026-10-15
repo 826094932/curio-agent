@@ -14,7 +14,7 @@ from app.web_search import service as web_service
 from app.products.matching import local_coverage
 
 
-def build_tools(user_id, run_id, state, evidence, ranked, allow_save, emit, web_search=False, web_report=None):
+def build_tools(user_id, run_id, state, evidence, ranked, allow_save, emit, web_search=False, web_report=None, timing=None):
     """每轮创建工具闭包，用户身份来自后端认证，模型无法指定 user_id。"""
     counts = {}
     total = 0
@@ -131,6 +131,7 @@ def build_tools(user_id, run_id, state, evidence, ranked, allow_save, emit, web_
                 return {'ok': False, 'error': 'TOOL_CALL_LIMIT'}
             await emit('status', {'stage': name})
             start = perf_counter()
+            started_ms = timing.elapsed_ms() if timing else None
             try:
                 result = await asyncio.wait_for(fn(**kwargs), timeout=45)
                 response = {'ok': True, 'data': result}
@@ -138,6 +139,8 @@ def build_tools(user_id, run_id, state, evidence, ranked, allow_save, emit, web_
                 response = {'ok': False, 'error': getattr(exc, 'code', 'INVALID_ARGUMENT'), 'message': getattr(exc, 'message', str(exc))}
             except Exception:
                 response = {'ok': False, 'error': 'TOOL_UNAVAILABLE', 'message': '工具暂不可用，不能据此编造结果'}
+            if timing:
+                timing.record_tool(name, started_ms, (perf_counter() - start) * 1000, response)
             async with database.session() as db:
                 db.add(ToolLog(run_id=run_id, tool_name=name,
                                arguments_redacted={'fields': list(kwargs), 'product_ids': kwargs.get('product_ids', [])},

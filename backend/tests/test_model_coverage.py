@@ -33,6 +33,12 @@ REQUESTED = ['索尼 XM5', 'Beats Studio Pro']
     ('索尼 XM5', item('wrong', 'Sony', 'WH-1000XM50'), False),
     ('Beats Studio Pro', item('wrong', 'Beats', 'Studio Pro Plus'), False),
     ('iPhone 16 Pro', item('wrong', 'Apple', 'iPhone 16 Pro Max'), False),
+    ('AirPods 5', item('configured', 'Apple', 'AirPods 5 USB-C'), True),
+    ('iPhone 18 Pro', item('configured', 'Apple', 'iPhone 18 Pro 256GB'), True),
+    ('Xiaomi 17 Ultra', item('configured', 'Xiaomi', 'Xiaomi 17 Ultra 16GB+512GB'), True),
+    ('iPhone 18', item('wrong', 'Apple', 'iPhone 18 Pro 256GB'), False),
+    ('AirPods 5', item('wrong', 'Apple', 'AirPods 50 USB-C'), False),
+    ('iPhone 18 Pro 256GB', item('wrong', 'Apple', 'iPhone 18 Pro 512GB'), False),
 ])
 def test_model_identity(requested, record, matched):
     assert matches_model(record, requested) is matched

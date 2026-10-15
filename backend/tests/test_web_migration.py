@@ -10,6 +10,7 @@ def test_upgrade_existing_database_preserves_messages(tmp_path, monkeypatch):
     engine = create_engine('sqlite:///' + str(path))
     Base.metadata.create_all(engine)
     with engine.begin() as db:
+        db.execute(text('DROP TABLE product_updates'))
         db.execute(text('DROP TABLE web_search_cache'))
         db.execute(text('DROP TABLE web_evidence'))
         db.execute(text('ALTER TABLE chat_messages DROP COLUMN web_search'))
@@ -23,7 +24,8 @@ def test_upgrade_existing_database_preserves_messages(tmp_path, monkeypatch):
     with engine.connect() as db:
         row = db.execute(text('SELECT content, web_search FROM chat_messages')).one()
         assert row == ('original answer', 0)
-        assert db.execute(text('SELECT version_num FROM alembic_version')).scalar() == '0002'
+        assert db.execute(text('SELECT version_num FROM alembic_version')).scalar() == '0003'
+    assert 'product_updates' in inspect(engine).get_table_names()
     engine.dispose()
 
 
@@ -34,4 +36,5 @@ def test_fresh_install_migration(tmp_path, monkeypatch):
     engine = create_engine('sqlite:///' + str(path))
     assert 'web_search' in {column['name'] for column in inspect(engine).get_columns('chat_messages')}
     assert {'web_evidence', 'web_search_cache'} <= set(inspect(engine).get_table_names())
+    assert 'product_updates' in inspect(engine).get_table_names()
     engine.dispose()
